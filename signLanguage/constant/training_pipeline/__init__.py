@@ -11,7 +11,9 @@ DATA_INGESTION_DIR_NAME: str = "data_ingestion"
 DATA_INGESTION_FEATURE_STORE_DIR: str = "feature_store"
 
 DATA_DOWNLOAD_URL: str = "https://github.com/ViSiOnOp19cr/da/raw/main/sign%20language.v1i.yolov5pytorch.zip"
+DATA_INGESTION_S3_DATA_NAME: str = "sign language.v1i.yolov5pytorch.zip"
 
+DATA_BUCKET_NAME = "object-2024"
 
 
 """

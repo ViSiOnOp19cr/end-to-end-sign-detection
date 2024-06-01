@@ -26,6 +26,7 @@ class DataIngestionConfig:
     )
 
     data_download_url: str = DATA_DOWNLOAD_URL
+    S3_DATA_NAME = DATA_INGESTION_S3_DATA_NAME
 
 
 

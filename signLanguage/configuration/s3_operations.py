@@ -18,6 +18,12 @@ class S3Operation:
         self.s3_client = boto3.client("s3")
         self.s3_resource = boto3.resource("s3")
 
+    
+    def download_object(self,key, bucket_name, filename):
+        bucket = self.s3_resource.Bucket(bucket_name)
+        bucket.download_file(Key = key, Filename = filename)
+
+
     @staticmethod
     def read_object(
         object_name: str, decode: bool = True, make_readable: bool = False
@@ -43,7 +49,7 @@ class S3Operation:
             return conv_func()
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
 
     def get_bucket(self, bucket_name: str) -> Bucket:
 
@@ -61,7 +67,7 @@ class S3Operation:
             return bucket
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
 
 
     def is_model_present(self, bucket_name: str, s3_model_key: str) -> bool:
@@ -85,7 +91,8 @@ class S3Operation:
                 return False
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
+
 
     def get_file_object(
         self, filename: str, bucket_name: str
@@ -108,7 +115,8 @@ class S3Operation:
             return file_objs
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
+
 
     def load_model(
         self, model_name: str, bucket_name: str, model_dir: str = None
@@ -137,7 +145,7 @@ class S3Operation:
             return model
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
 
 
     def create_folder(self, folder_name: str, bucket_name: str) -> None:
@@ -198,7 +206,7 @@ class S3Operation:
             logging.info("Exited the upload_file method of S3Operations class")
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
 
     def upload_folder(self, folder_name: str, bucket_name: str) -> None:
 
@@ -219,7 +227,7 @@ class S3Operation:
             logging.info("Exited the upload_folder method of S3Operations class")
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
 
     def upload_df_as_csv(
         self,
@@ -243,7 +251,7 @@ class S3Operation:
             logging.info("Exited the upload_df_as_csv method of S3Operations class")
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
 
     def get_df_from_object(self, object_: object) -> DataFrame:
 
@@ -263,7 +271,7 @@ class S3Operation:
             return df
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e
 
     def read_csv(self, filename: str, bucket_name: str) -> DataFrame:
 
@@ -283,4 +291,4 @@ class S3Operation:
             return df
 
         except Exception as e:
-            raise SignException(e, sys) from e
+            raise Exception(e, sys) from e

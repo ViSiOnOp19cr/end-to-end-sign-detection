@@ -4,39 +4,36 @@ from six.moves import urllib
 import zipfile
 from signLanguage.logger import logging
 from signLanguage.exception import SignException
+from signLanguage.constant.training_pipeline import *
 from signLanguage.entity.config_entity import DataIngestionConfig
 from signLanguage.entity.artifacts_entity import DataIngestionArtifact
-
-
-
+from signLanguage.configuration.s3_operations import S3Operation
 class DataIngestion:
     def __init__(self, data_ingestion_config: DataIngestionConfig = DataIngestionConfig()):
         try:
             self.data_ingestion_config = data_ingestion_config
+            self.s3 = S3Operation()
         except Exception as e:
-           raise SignException(e, sys)
-        
-    
+           raise Exception(e, sys)
 
+
+    
     def download_data(self)-> str:
         '''
-        Fetch data from the url
+        Fetch data from s3
         '''
 
         try: 
-            dataset_url = self.data_ingestion_config.data_download_url
             zip_download_dir = self.data_ingestion_config.data_ingestion_dir
             os.makedirs(zip_download_dir, exist_ok=True)
-            data_file_name = os.path.basename(dataset_url)
-            zip_file_path = os.path.join(zip_download_dir, data_file_name)
-            logging.info(f"Downloading data from {dataset_url} into file {zip_file_path}")
-            urllib.request.urlretrieve(dataset_url, zip_file_path)
-            logging.info(f"Downloaded data from {dataset_url} into file {zip_file_path}")
+            logging.info(f"Downloading data from s3 into file {zip_download_dir}")
+            zip_file_path = os.path.join(zip_download_dir, self.data_ingestion_config.S3_DATA_NAME)
+            self.s3.download_object(key= self.data_ingestion_config.S3_DATA_NAME, bucket_name=DATA_BUCKET_NAME, filename = zip_file_path)
+            logging.info(f"Downloaded data from s3 into file {zip_file_path}")
             return zip_file_path
 
         except Exception as e:
-            raise SignException(e, sys)
-        
+            raise Exception(e, sys)
 
     
 
@@ -48,18 +45,15 @@ class DataIngestion:
         """
         try:
             feature_store_path = self.data_ingestion_config.feature_store_file_path
-            os.makedirs(feature_store_path, exist_ok=True)
-            with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-                zip_ref.extractall(feature_store_path)
-            logging.info(f"Extracting zip file: {zip_file_path} into dir: {feature_store_path}")
-
+            os.system(f"unzip {zip_file_path} -d {feature_store_path}")
+            
             return feature_store_path
 
         except Exception as e:
-            raise SignException(e, sys)
-        
+            raise Exception(e, sys)
 
 
+    
     def initiate_data_ingestion(self)-> DataIngestionArtifact:
         logging.info("Entered initiate_data_ingestion method of Data_Ingestion class")
         try: 
@@ -76,5 +70,6 @@ class DataIngestion:
 
             return data_ingestion_artifact
 
+
         except Exception as e:
-            raise SignException(e, sys)
+            raise Exception(e, sys)

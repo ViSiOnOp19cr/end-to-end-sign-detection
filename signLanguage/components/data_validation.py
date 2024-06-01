@@ -19,14 +19,14 @@ class DataValidation:
             self.data_validation_config = data_validation_config
 
         except Exception as e:
-            raise SignException(e, sys) 
-        
+            raise Exception(e, sys) 
 
     
-    def validate_all_files_exist(self) -> bool:
+
+    def validate_all_files_exist(self)-> bool:
         try:
-            
             validation_status = None
+
             all_files = os.listdir(self.data_ingestion_artifact.feature_store_path)
 
             for file in all_files:
@@ -35,18 +35,18 @@ class DataValidation:
                     os.makedirs(self.data_validation_config.data_validation_dir, exist_ok=True)
                     with open(self.data_validation_config.valid_status_file_dir, 'w') as f:
                         f.write(f"Validation status: {validation_status}")
-
                 else:
                     validation_status = True
                     os.makedirs(self.data_validation_config.data_validation_dir, exist_ok=True)
                     with open(self.data_validation_config.valid_status_file_dir, 'w') as f:
                         f.write(f"Validation status: {validation_status}")
-            
+
             return validation_status
 
+
         except Exception as e:
-            raise SignException(e, sys)
-        
+            raise Exception(e, sys)
+
 
     
     def initiate_data_validation(self) -> DataValidationArtifact: 
@@ -65,4 +65,4 @@ class DataValidation:
             return data_validation_artifact
 
         except Exception as e:
-            raise SignException(e, sys)
+            raise Exception(e, sys)
